@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(OpenMP)
 
 
-add_library(curves SHARED src/curves.cpp)
+# install()
 
 add_executable(task src/task.cpp)
-target_link_libraries(task OpenMP::OpenMP_CXX libcurves.so)
+target_link_libraries(task OpenMP::OpenMP_CXX )

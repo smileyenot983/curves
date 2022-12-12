@@ -11,8 +11,7 @@
 
 #include <cassert>
 
-// #include "curves.cpp"
-
+#include "curves.cpp"
 #include <omp.h>
 
 
