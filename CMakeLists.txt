@@ -1,0 +1,1 @@
+add_executable(curves src/curves.cpp)
