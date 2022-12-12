@@ -1,34 +1,52 @@
-
-
 #include <vector>
+#include <cassert>
 #include <cmath>
 
-#include <iostream>
-
-#include <typeinfo>
-
+// TASK1. creating 3 different classes of curves
 
 class Curve
 {
     public:
+        Curve(){}
+        Curve(double _radius) : radius(_radius){
+            assert(_radius > 0.0);
+        }
     
         // returns 3d point
-        virtual std::vector<double> get_point(double angle){}
+        virtual std::vector<double> get_point(double angle)
+        {
+            std::vector<double> zero_vec = {0.0,0.0,0.0};
+            return zero_vec;
+        }
 
         // returns gradient
-        virtual std::vector<double> gradient_at_point(double angle){}
+        virtual std::vector<double> gradient_at_point(double angle){ return {0.0};}
 
+        int type = 0;
+
+        double radius = 1;
+
+        
 };
 
 /*
 equation: x^2 + y^2 = r^2
 */
-class Circle : Curve
+class Circle : public Curve
 {
     public:
-        Circle(double _radius): radius(_radius){}
+        Circle()
+        {
+            type = 0;
+        }
 
-        double radius;
+        Circle(double _radius): Curve{_radius}
+        {
+            type = 0;
+        }
+
+
+        // double radius;
 
         std::vector<double> get_point(double angle)
         {
@@ -54,25 +72,38 @@ class Circle : Curve
             double grad_z = 0.0;
 
             std::vector<double> grad_3d = {grad_x, grad_y, grad_z};
+
+            return grad_3d;
         }
+
+    private:
+        
 };
 
 /*
 equation: x^2/a^2 + y^2/b^2 = 1
 a,b - corresponding radii
 */
-class Ellipse : Curve
+class Ellipse : public Curve
 {
     public:
-        Ellipse(double _radius_x, double _radius_y) : radius_x(_radius_x), radius_y(_radius_y) {}
+        Ellipse()
+        {
+            type = 1;
+        }
 
-        double radius_x;
-        double radius_y;
+        Ellipse(double _radius_x, double _radius_y) : Curve{_radius_x}, radius_2(_radius_y) 
+        {
+            type = 1;
+        }
+
+        // double radius_x;
+        double radius_2;
 
         std::vector<double> get_point(double angle)
         {
-            double x = radius_x * cos(angle);
-            double y = radius_y * sin(angle);
+            double x = radius * cos(angle);
+            double y = radius_2 * sin(angle);
             double z = 0.0;
             std::vector<double> point_3d = {x,y,z};
 
@@ -81,30 +112,37 @@ class Ellipse : Curve
 
         std::vector<double> gradient_at_point(double angle)
         {
-            double x = radius_x * cos(angle);
-            double y = radius_y * sin(angle);
+            double x = radius * cos(angle);
+            double y = radius_2 * sin(angle);
 
-            double grad_x = (2 * x) / (radius_x*radius_x);
-            double grad_y = (2 * y) / (radius_y*radius_y);
+            double grad_x = (2 * x) / (radius*radius);
+            double grad_y = (2 * y) / (radius_2*radius_2);
             double grad_z = 0.0;
 
             std::vector<double> grad_3d = {grad_x, grad_y, grad_z};
+
+            return grad_3d;
         }
 
+    private:
+         
 };
 
 
-int random_int(int offset, int range)
-{
-    return offset + (rand() % range);
-}
-
-class Helix : Curve
+class Helix : public Curve
 {
     public:
-        Helix(double _radius, double _step) : radius(_radius), step(_step){}
+        Helix()
+        {
+            type = 2;
+        }
 
-        double radius;
+        Helix(double _radius, double _step) : Curve{_radius}, step(_step)
+        {
+            type = 2;
+        }
+
+        // double radius;
         double step;
 
         std::vector<double> get_point(double angle)
@@ -128,44 +166,9 @@ class Helix : Curve
             double grad_z = step;
 
             std::vector<double> grad_3d = {grad_x, grad_y, grad_z};
+
+            return grad_3d;
         }
+
+    private:
 };
-
-
-
-
-
-
-int main()
-{
-    std::vector<double> angles = {0.0, 1.57, 3.14, 6.28};
-
-    Circle circle1(5);
-    Circle circle2(15);
-    Ellipse ellipse1(2,3);
-
-    Helix helix1(1,2);
-
-    std::vector<double> cur_point;
-    for(const auto &angle : angles)
-    {
-        cur_point = circle1.get_point(angle);
-        std::cout << "circle | angle: " << angle << " cur_point.x: " << cur_point[0] << " cur_point.y: " << cur_point[1] << " cur_point.z: " << cur_point[2] << std::endl;   
-    }
-
-    for(const auto &angle : angles)
-    {
-        cur_point = ellipse1.get_point(angle);
-        std::cout << "ellipse | angle: " << angle << " cur_point.x: " << cur_point[0] << " cur_point.y: " << cur_point[1] << " cur_point.z: " << cur_point[2] << std::endl;   
-    }
-
-    for(const auto &angle : angles)
-    {
-        cur_point = helix1.get_point(angle);
-        std::cout << "helix | angle: " << angle << " cur_point.x: " << cur_point[0] << " cur_point.y: " << cur_point[1] << " cur_point.z: " << cur_point[2] << std::endl;   
-    }
-
-
-
-    return 0;
-}
